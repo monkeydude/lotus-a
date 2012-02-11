@@ -1,6 +1,7 @@
 // Here it is. The core to our entire project :)
 
 #include "foundation.h"
+#include "StateAI.h"
 #include <vector>
 
 // Rule-Based Artificial Intelligence

@@ -189,6 +189,14 @@
 				RelativePath=".\rendering.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\StateAI.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\StateAI.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Assorted Includes"
