@@ -101,23 +101,23 @@ bool Board::CreateBoard(int players)
 //Create the locations of each position on the board (the top left coordinate)
 void Board::CreateLocationsTable()
 {
-	this->locations[0] = Point2f(102, 194);
-	this->locations[1] = Point2f(99, 280);
-	this->locations[2] = Point2f(154, 351);
-	this->locations[3] = Point2f(366, 197);
-	this->locations[4] = Point2f(372, 280);
-	this->locations[5] = Point2f(317, 352);
-	this->locations[6] = Point2f(236, 378);
-	this->locations[7] = Point2f(232, 438);
-	this->locations[8] = Point2f(117, 407);
-	this->locations[9] = Point2f(37, 304);
-	this->locations[10] = Point2f(37, 175);
-	this->locations[11] = Point2f(113, 71);
-	this->locations[12] = Point2f(236, 32);
+	this->locations[0] = Point2f(118, 198);
+	this->locations[1] = Point2f(118, 278);
+	this->locations[2] = Point2f(164, 343);
+	this->locations[3] = Point2f(360, 200);
+	this->locations[4] = Point2f(360, 278);
+	this->locations[5] = Point2f(314, 343);
+	this->locations[6] = Point2f(239, 368);
+	this->locations[7] = Point2f(239, 448);
+	this->locations[8] = Point2f(117, 408);
+	this->locations[9] = Point2f(41, 304);
+	this->locations[10] = Point2f(41, 176);
+	this->locations[11] = Point2f(117, 71);
+	this->locations[12] = Point2f(239, 32);
 	this->locations[13] = Point2f(359, 71);
-	this->locations[14] = Point2f(437, 174);
-	this->locations[15] = Point2f(439, 304);
-	this->locations[16] = Point2f(363, 399);//changed all to main lotus board
+	this->locations[14] = Point2f(437, 176);
+	this->locations[15] = Point2f(437, 303);
+	this->locations[16] = Point2f(361, 408);
 
 	this->locations[17] = Point2f(300, 420); //finish zone
 }
@@ -243,6 +243,34 @@ PIECE Board::GetTopPiece(int pos)
 	return this->position[pos].top();
 }
 
+int Board::GetDeepestPiece(PIECE player, int pos)
+{
+        int deepest = 0;
+		int count = 1;
+ 
+        //check if position is valid
+        if ((pos < 0) || (pos > (MAX_GAME_POSITIONS-1)))
+                return 0; //invalid
+ 
+ 
+        //Main board stacks
+        if (this->position[pos].empty())
+                return 0;
+ 
+		stack<PIECE> tempStack = this->position[pos];
+
+		while (!tempStack.empty()){
+			if (tempStack.top() == player){
+				deepest = count;
+			}
+			tempStack.pop();
+			count++;
+		}
+
+        return deepest;
+}
+
+
 //Check if the top piece on a stack is the same as another piece
 bool Board::IsPieceOnTop(PIECE player, int pos)
 {
@@ -290,7 +318,6 @@ bool Board::MovePiece(int begin, int end = -1)
 	if (begin < -this->numstartstacks || begin > MAX_GAME_POSITIONS || (end <= begin && end != -1))
 	{
 		GameData()->RecordMove(TM_NONE);
-
 		return 0;
 	}
 
@@ -341,16 +368,10 @@ bool Board::MovePiece(int begin, int end = -1)
 			this->position[end].push(this->start[sbegin].top());
 			this->start[sbegin].pop();
 
-			//Re-evaluate the state for each state-based AI
-			for (int a=0; a<4; a++){
-				if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
-					GameData()->states.at(a)->StateChangeCheck(begin, end);
-				}
-			}
+			UpdateStateAIs(begin, end);
 
 			// Append last move
 			GameData()->RecordMove(TM_START);
-			cout <<"S:"<<begin<<"E:"<<end<<endl;//print out locations of board
 			return 1;
 		}
 
@@ -397,12 +418,7 @@ bool Board::MovePiece(int begin, int end = -1)
 				// Jump to the end?
 				printf("moving piece from %i to %i over distance %i\n", begin, end, distance*2);
 					
-				//Re-evaluate the state for each state-based AI
-				for (int a=0; a<4; a++){
-					if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
-						GameData()->states.at(a)->StateChangeCheck(begin, end);
-					}
-				}
+				UpdateStateAIs(begin, end);
 
 				if (end == MAX_GAME_POSITIONS)
 					this->finish.push_back(this->position[begin].top());
@@ -421,12 +437,7 @@ bool Board::MovePiece(int begin, int end = -1)
 			this->position[end].push(this->position[begin].top());
 			this->position[begin].pop();
 
-			//Re-evaluate the state for each state-based AI
-			for (int a=0; a<4; a++){
-				if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
-					GameData()->states.at(a)->StateChangeCheck(begin, end);
-				}
-			}
+			UpdateStateAIs(begin, end);
 
 			// Check new stack size...
 			if (this->position[end].size() > 2) //significant stack size?
@@ -466,12 +477,7 @@ bool Board::MovePiece(int begin, int end = -1)
 				this->finish.push_back(this->position[begin].top());
 				this->position[begin].pop();
 
-				//Re-evaluate the state for each state-based AI
-				for (int a=0; a<4; a++){
-					if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
-						GameData()->states.at(a)->StateChangeCheck(begin, end);
-					}
-				}
+				UpdateStateAIs(begin, end);
 
 				// You moved forward
 				GameData()->RecordMove(TM_FORWARD);
@@ -502,12 +508,7 @@ bool Board::MovePiece(int begin, int end = -1)
 					// Jump to the end?
 					printf("moving piece from %i to %i over distance %i\n", begin, end, distance);
 					
-					//Re-evaluate the state for each state-based AI
-					for (int a=0; a<4; a++){
-						if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
-							GameData()->states.at(a)->StateChangeCheck(begin, end);
-						}
-					}
+					UpdateStateAIs(begin, end);
 
 					if (end == MAX_GAME_POSITIONS)
 						this->finish.push_back(this->position[begin].top());
@@ -525,12 +526,7 @@ bool Board::MovePiece(int begin, int end = -1)
 					// Normal movement
 					printf("moving piece from %i to %i over distance %i\n", begin, end, distance);
 
-					//Re-evaluate the state for each state-based AI
-					for (int a=0; a<4; a++){
-						if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
-							GameData()->states.at(a)->StateChangeCheck(begin, end);
-						}
-					}
+					UpdateStateAIs(begin, end);
 
 					this->position[end].push(this->position[begin].top());
 					this->position[begin].pop();
@@ -705,4 +701,46 @@ int Board::IsLocGood(int x1, int y1)
 	}
 
 	return 0; //uh... fix this...
+}
+
+void Board::UpdateStateAIs(int begin, int end){
+
+	printf("P1 deepest at 0 is %d\n", GetDeepestPiece(PIECE_P1, 0));
+
+	//Re-evaluate the state for each state-based AI
+	for (int a=0; a<4; a++){
+		//if this player is a state based AI
+		if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
+			//if the state is not yet set, start out at movePieceState
+			if (GameData()->states.at(a) == NULL){
+				GameData()->states.at(a) = (BaseState*)(new movePieceState(GameData()->players.at(a).piece));
+			}
+			//if the state is no longer valid
+			else if(GameData()->states.at(a)->StateChangeCheck(begin, end)){
+				//find the new state
+				int newstate = GameData()->states.at(a)->findState(GameData()->players.at(a).piece);
+				//UPDATE THIS FOR CAPTURED STATE
+				switch (newstate){
+					case 1:
+						GameData()->states.at(a) = (BaseState*)(new exitingPieceState(GameData()->players.at(a).piece));
+						break;
+					case 2:
+						GameData()->states.at(a) = (BaseState*)(new useTrampState(GameData()->players.at(a).piece));
+						break;
+					case 3:
+						GameData()->states.at(a) = (BaseState*)(new captureTrampState(GameData()->players.at(a).piece));
+						break;
+					case 4:
+						GameData()->states.at(a) = (BaseState*)(new captureStackState(GameData()->players.at(a).piece));
+						break;
+					case 5:
+						GameData()->states.at(a) = (BaseState*)(new movePieceState(GameData()->players.at(a).piece));
+						break;
+					case 6:
+						GameData()->states.at(a) = (BaseState*)(new exitingPieceState(GameData()->players.at(a).piece));
+						break;
+				}
+			}
+		}
+	}
 }
