@@ -101,23 +101,23 @@ bool Board::CreateBoard(int players)
 //Create the locations of each position on the board (the top left coordinate)
 void Board::CreateLocationsTable()
 {
-	this->locations[0] = Point2f(118, 198);
-	this->locations[1] = Point2f(118, 278);
-	this->locations[2] = Point2f(164, 343);
-	this->locations[3] = Point2f(360, 200);
-	this->locations[4] = Point2f(360, 278);
-	this->locations[5] = Point2f(314, 343);
-	this->locations[6] = Point2f(239, 368);
-	this->locations[7] = Point2f(239, 448);
-	this->locations[8] = Point2f(117, 408);
-	this->locations[9] = Point2f(41, 304);
-	this->locations[10] = Point2f(41, 176);
-	this->locations[11] = Point2f(117, 71);
-	this->locations[12] = Point2f(239, 32);
+	this->locations[0] = Point2f(102, 194);
+	this->locations[1] = Point2f(99, 280);
+	this->locations[2] = Point2f(154, 351);
+	this->locations[3] = Point2f(366, 197);
+	this->locations[4] = Point2f(372, 280);
+	this->locations[5] = Point2f(317, 352);
+	this->locations[6] = Point2f(236, 378);
+	this->locations[7] = Point2f(232, 438);
+	this->locations[8] = Point2f(117, 407);
+	this->locations[9] = Point2f(37, 304);
+	this->locations[10] = Point2f(37, 175);
+	this->locations[11] = Point2f(113, 71);
+	this->locations[12] = Point2f(236, 32);
 	this->locations[13] = Point2f(359, 71);
-	this->locations[14] = Point2f(437, 176);
-	this->locations[15] = Point2f(437, 303);
-	this->locations[16] = Point2f(361, 408);
+	this->locations[14] = Point2f(437, 174);
+	this->locations[15] = Point2f(439, 304);
+	this->locations[16] = Point2f(363, 399);//changed all to main lotus board
 
 	this->locations[17] = Point2f(300, 420); //finish zone
 }
