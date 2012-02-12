@@ -1,8 +1,6 @@
-#include "StateAI.h"
-
 #include<iostream>
 #include<string>
-#include "StateAI.h"
+#include "foundation.h"
 
 
 string BaseState::GetStateName(void)
@@ -10,7 +8,7 @@ string BaseState::GetStateName(void)
  return stateName_;
 }
 
-exitingPieceState::exitingPieceState(BaseState* state)
+exitingPieceState::exitingPieceState(/*BaseState* state*/)
 {
 	/* populate valid moves list
 
@@ -24,10 +22,12 @@ exitingPieceState::exitingPieceState(BaseState* state)
 void exitingPieceState::movePiece()
 {
  //move a piece, this funct may not be needed as it's not being over written
+	printf("I moved a piece! (not really)\n");
 }
 
 void exitingPieceState::StateChangeCheck(int source, int destination)
 {
+	printf("I'm checking stack %d and %d\n", source, destination);
 /*condition for moving to the next state to be implemented
  if (stack_ > STUFF_WHICH_IDK)
  {

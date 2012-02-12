@@ -1,7 +1,6 @@
 // Here it is. The core to our entire project :)
 
 #include "foundation.h"
-#include "StateAI.h"
 #include <vector>
 
 // Rule-Based Artificial Intelligence
@@ -238,7 +237,8 @@ void PerformAIRuleTurn(Player &player)
 }
 
 // State-Based Artificial Intelligence
-void PerformAIStateTurn(Player &player)
+void PerformAIStateTurn(Player &player, BaseState* &state)
 {
-	// CODE GOES HERE
+	//run the move piece code that pertains to the current state of this AI
+	state->movePiece();
 }

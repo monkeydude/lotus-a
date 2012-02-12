@@ -15,7 +15,7 @@ public:
 
   //these will occur in the concrete states
   virtual void movePiece(void) = 0;
-  virtual void StateChangeCheck(void) = 0;
+  virtual void StateChangeCheck(int, int) = 0;
 
 protected:
   vector<int> validMoves_;
@@ -27,7 +27,7 @@ protected:
 class exitingPieceState : BaseState
 {
 public:
-  exitingPieceState(BaseState* state);
+  exitingPieceState(/*BaseState* state*/);
   void movePiece();
   void StateChangeCheck(int, int);//two ints
  

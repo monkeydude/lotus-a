@@ -340,6 +340,13 @@ bool Board::MovePiece(int begin, int end = -1)
 			this->position[end].push(this->start[sbegin].top());
 			this->start[sbegin].pop();
 
+			//Re-evaluate the state for each state-based AI
+			for (int a=0; a<4; a++){
+				if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
+					GameData()->states.at(a)->StateChangeCheck(begin, end);
+				}
+			}
+
 			// Append last move
 			GameData()->RecordMove(TM_START);
 			return 1;
@@ -388,6 +395,13 @@ bool Board::MovePiece(int begin, int end = -1)
 				// Jump to the end?
 				printf("moving piece from %i to %i over distance %i\n", begin, end, distance*2);
 					
+				//Re-evaluate the state for each state-based AI
+				for (int a=0; a<4; a++){
+					if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
+						GameData()->states.at(a)->StateChangeCheck(begin, end);
+					}
+				}
+
 				if (end == MAX_GAME_POSITIONS)
 					this->finish.push_back(this->position[begin].top());
 				else
@@ -404,6 +418,13 @@ bool Board::MovePiece(int begin, int end = -1)
 			printf("moving piece from %i to %i over distance %i\n", begin, end, distance);
 			this->position[end].push(this->position[begin].top());
 			this->position[begin].pop();
+
+			//Re-evaluate the state for each state-based AI
+			for (int a=0; a<4; a++){
+				if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
+					GameData()->states.at(a)->StateChangeCheck(begin, end);
+				}
+			}
 
 			// Check new stack size...
 			if (this->position[end].size() > 2) //significant stack size?
@@ -443,6 +464,13 @@ bool Board::MovePiece(int begin, int end = -1)
 				this->finish.push_back(this->position[begin].top());
 				this->position[begin].pop();
 
+				//Re-evaluate the state for each state-based AI
+				for (int a=0; a<4; a++){
+					if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
+						GameData()->states.at(a)->StateChangeCheck(begin, end);
+					}
+				}
+
 				// You moved forward
 				GameData()->RecordMove(TM_FORWARD);
 				return 1;
@@ -472,6 +500,13 @@ bool Board::MovePiece(int begin, int end = -1)
 					// Jump to the end?
 					printf("moving piece from %i to %i over distance %i\n", begin, end, distance);
 					
+					//Re-evaluate the state for each state-based AI
+					for (int a=0; a<4; a++){
+						if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
+							GameData()->states.at(a)->StateChangeCheck(begin, end);
+						}
+					}
+
 					if (end == MAX_GAME_POSITIONS)
 						this->finish.push_back(this->position[begin].top());
 					else
@@ -487,6 +522,14 @@ bool Board::MovePiece(int begin, int end = -1)
 				{
 					// Normal movement
 					printf("moving piece from %i to %i over distance %i\n", begin, end, distance);
+
+					//Re-evaluate the state for each state-based AI
+					for (int a=0; a<4; a++){
+						if (!GameData()->players.at(a).isHuman && !GameData()->players.at(a).isRule){
+							GameData()->states.at(a)->StateChangeCheck(begin, end);
+						}
+					}
+
 					this->position[end].push(this->position[begin].top());
 					this->position[begin].pop();
 
