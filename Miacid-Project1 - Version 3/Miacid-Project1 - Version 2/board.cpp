@@ -290,6 +290,7 @@ bool Board::MovePiece(int begin, int end = -1)
 	if (begin < -this->numstartstacks || begin > MAX_GAME_POSITIONS || (end <= begin && end != -1))
 	{
 		GameData()->RecordMove(TM_NONE);
+
 		return 0;
 	}
 
@@ -349,6 +350,7 @@ bool Board::MovePiece(int begin, int end = -1)
 
 			// Append last move
 			GameData()->RecordMove(TM_START);
+			cout <<"S:"<<begin<<"E:"<<end<<endl;//print out locations of board
 			return 1;
 		}
 

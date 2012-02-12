@@ -52,7 +52,7 @@ void GD::CreatePlayer()
 	Player newplayer;
 	
 	//Set the start state for this player as state 5
-	this->states.push_back((BaseState*)(new exitingPieceState()));
+	this->states.push_back((BaseState*)(new captureStackState()));
 	this->players.push_back(newplayer);
 	this->numplayers++;
 }

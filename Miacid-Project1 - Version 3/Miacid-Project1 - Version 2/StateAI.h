@@ -39,7 +39,7 @@ private:
 class useTrampState : BaseState
 {
 public:
-  useTrampState(BaseState* state);
+  useTrampState();
   void movePiece();
   void StateChangeCheck(int, int);//two ints
  
@@ -51,7 +51,7 @@ private:
 class captureTrampState : BaseState
 {
 public:
-  captureTrampState(BaseState* state);
+  captureTrampState();
   void movePiece();
   void StateChangeCheck(int, int);//two ints
  
@@ -63,7 +63,7 @@ private:
 class captureStackState : BaseState
 {
 public:
-  captureStackState(BaseState* state);
+  captureStackState();
   void movePiece();
   void StateChangeCheck(int, int);//two ints
  
@@ -75,7 +75,7 @@ private:
 class movePieceState : BaseState
 {
 public:
-  movePieceState(BaseState* state);
+  movePieceState();
   void movePiece();
   void StateChangeCheck(int, int);//two ints
  
@@ -87,7 +87,7 @@ private:
 class cantMoveState : BaseState
 {
 public:
-  cantMoveState(BaseState* state);
+  cantMoveState();
   void movePiece();
   void StateChangeCheck(int, int);//two ints
  
