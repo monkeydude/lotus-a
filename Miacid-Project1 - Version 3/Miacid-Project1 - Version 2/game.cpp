@@ -134,6 +134,7 @@ void GameMainBoard()
 // Show the results of the game
 void GameResults()
 {
+	std::cin.get();
 	system("cls");
 	printf("Congratulations! The game has been won!");
 

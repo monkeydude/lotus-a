@@ -243,8 +243,8 @@ void PerformAIStateTurn(Player &player, BaseState* &state)
 	if (GameData()->states.at(GameData()->currentPlayer) == NULL){
 		GameData()->states.at(GameData()->currentPlayer) = (BaseState*)(new movePieceState(GameData()->players.at(GameData()->currentPlayer).piece));
 	}
-	else{
+	//else{
 		//run the move piece code that pertains to the current state of this AI
 		state->movePiece();
-	}
+	//}
 }
