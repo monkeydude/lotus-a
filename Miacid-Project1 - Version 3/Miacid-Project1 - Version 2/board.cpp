@@ -119,7 +119,7 @@ void Board::CreateLocationsTable()
 	this->locations[15] = Point2f(439, 304);
 	this->locations[16] = Point2f(363, 399);//changed all to main lotus board
 
-	this->locations[17] = Point2f(300, 420); //finish zone
+	this->locations[17] = Point2f(300, 430); //finish zone
 }
 
 void Board::CreateStartLocationsTable()
@@ -668,11 +668,18 @@ void Board::Render()
 // Attempt to return a location on the board given a click
 bool Board::GetLocationFromXY(int x, int y, int &result)
 {
+	//instead of calculating if a position is correct based on the player piece PNG it will now use a static size
+	//if want to use PNG size, use this->units[0]->getWidth();
+	//I also added a 2px buffer
+	int pieceHeight=32;
+	int	pieceWidth=32;
+
 	// Check starting locations
 	for (int i = 0; i < this->numstartstacks; i++)
 	{
-		if (x >= this->slocations[i].x && x <= (this->slocations[i].x + this->units[0]->getWidth()) &&
-			y >= this->slocations[i].y && y <= (this->slocations[i].y + this->units[0]->getHeight()))
+		
+		if (x >= this->slocations[i].x-2 && x <= (this->slocations[i].x + pieceWidth + 2) &&
+			y >= this->slocations[i].y-2 && y <= (this->slocations[i].y + pieceHeight + 2))
 		{
 			result = -i - 1; //starting stacks are considered negative with respect to ids...
 			return 1;
@@ -681,9 +688,14 @@ bool Board::GetLocationFromXY(int x, int y, int &result)
 
 	// Check other locations
 	for (int i = 0; i <= MAX_GAME_POSITIONS; i++)
-	{
-		if (x >= this->locations[i].x && x <= (this->locations[i].x + this->units[0]->getWidth()) &&
-			y >= this->locations[i].y && y <= (this->locations[i].y + this->units[0]->getHeight()))
+	{	
+		if (i==17){//last space is special
+			pieceHeight=50;
+			pieceWidth=50;
+		}
+
+		if (x >= this->locations[i].x-2 && x <= (this->locations[i].x + pieceWidth + 2) && 
+			y >= this->locations[i].y-2 && y <= (this->locations[i].y + pieceHeight + 2))
 		{
 			result = i;
 			return 1;
