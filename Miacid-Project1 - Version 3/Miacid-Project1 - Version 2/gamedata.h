@@ -12,6 +12,13 @@ public:
 
 	PNG LoadingImage;
 	PNG LotusBoard;
+	PNG LotusError;
+	PNG LotusSelected;
+	PNG LotusPossible;
+	PNG LotusWhiteMoved;
+	PNG LotusBlackMoved;
+	PNG LotusRedMoved;
+	PNG LotusBlueMoved;
 	PNG LotusWhite;
 	PNG LotusBlack;
 	PNG LotusRed;
@@ -61,8 +68,11 @@ public:
 	GD();
 
 	void CreateBoard();
+	void SetSelected(PNG * selected, PNG * possible);
 	void SetBoardBackground(PNG * bg);
+	void SetBoardError(PNG * error);
 	void SetBoardPieces(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue);
+	void SetBoardPiecesMoved(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue);
 	void SetBoardNumbers(PNG img_num[24]);
 	
 	void SetLastClick(int x, int y);

@@ -1,11 +1,14 @@
 // Include the foundation
 #include "foundation.h"
+#include <windows.h>
 
 // Constructor
 Board::Board()
 {
 	// Set the background to nothing then create piece locations
 	this->background = NULL;
+	this->errorOccurred = false;
+	this->possibleMoves=99;
 	this->CreateLocationsTable();
 }
 
@@ -188,6 +191,17 @@ void Board::SetBackground(PNG * bg)
 	this->background = bg;
 }
 
+void Board::SetSelected(PNG * selected, PNG * possible)
+{
+	this->selected = selected;
+	this->possible = possible;
+}
+
+void Board::SetError(PNG * error)
+{
+	this->error = error;
+}
+
 //Set the Pieces on the board
 void Board::SetPieces(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue)
 {
@@ -195,6 +209,15 @@ void Board::SetPieces(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * 
 	this->units[1] = unit_black;
 	this->units[2] = unit_red;
 	this->units[3] = unit_blue;
+}
+
+//Set the Pieces Moved Outlines on the board
+void Board::SetPiecesMoved(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue)
+{
+	this->unitsMoved[0] = unit_white;
+	this->unitsMoved[1] = unit_black;
+	this->unitsMoved[2] = unit_red;
+	this->unitsMoved[3] = unit_blue;
 }
 
 //Set the number on the pieces
@@ -286,6 +309,7 @@ bool Board::IsPosEmpty(int pos)
 	return (PIECE_BAD == GetTopPiece(pos));
 }
 
+
 // Get the size of a stack
 int Board::GetSizeOfStack(int pos)
 {
@@ -318,12 +342,14 @@ bool Board::MovePiece(int begin, int end = -1)
 	if (begin < -this->numstartstacks || begin > MAX_GAME_POSITIONS || (end <= begin && end != -1))
 	{
 		GameData()->RecordMove(TM_NONE);
+		this->errorOccurred=true;
 		return 0;
 	}
 
 	if (end < -1)
 	{
 		GameData()->RecordMove(TM_NONE);
+		this->errorOccurred=true;
 		return 0;
 	}
 
@@ -358,6 +384,7 @@ bool Board::MovePiece(int begin, int end = -1)
 		if (this->start[sbegin].empty())
 		{
 			GameData()->RecordMove(TM_NONE);
+			this->errorOccurred=true;
 			return 0;
 		}
 
@@ -377,6 +404,7 @@ bool Board::MovePiece(int begin, int end = -1)
 
 		// Assume failure
 		GameData()->RecordMove(TM_NONE);
+		this->errorOccurred=true;
 		return 0;
 	}
 
@@ -387,6 +415,7 @@ bool Board::MovePiece(int begin, int end = -1)
 		if (end > 2 && end < 6)
 		{
 			GameData()->RecordMove(TM_NONE);
+			this->errorOccurred=true;
 			return 0;
 		}
 
@@ -401,6 +430,7 @@ bool Board::MovePiece(int begin, int end = -1)
 		if (this->position[begin].empty())
 		{
 			GameData()->RecordMove(TM_NONE);
+			this->errorOccurred=true;
 			return 0;
 		}
 
@@ -452,6 +482,7 @@ bool Board::MovePiece(int begin, int end = -1)
 
 		// Assume failure
 		GameData()->RecordMove(TM_NONE);
+		this->errorOccurred=true;
 		return 0;
 	}
 
@@ -462,6 +493,7 @@ bool Board::MovePiece(int begin, int end = -1)
 		if (this->position[begin].empty())
 		{
 			GameData()->RecordMove(TM_NONE);
+			this->errorOccurred=true;
 			return 0;
 		}
 
@@ -488,6 +520,7 @@ bool Board::MovePiece(int begin, int end = -1)
 
 			// Assume failure
 			GameData()->RecordMove(TM_NONE);
+			this->errorOccurred=true;
 			return 0;
 		}
 		else
@@ -549,6 +582,7 @@ bool Board::MovePiece(int begin, int end = -1)
 
 			// Assume failure
 			GameData()->RecordMove(TM_NONE);
+			this->errorOccurred=true;
 			return 0;
 		}
 	}
@@ -616,12 +650,84 @@ int Board::BoardPiecesRemaining()
 
 	return 0; //assume the board is in error.
 }
+//propery determines array location to stack number
+int Board::fuckthisshit(int fuckynum){
+	int goodnum;
 
+	if(fuckynum<0)
+		goodnum=(-fuckynum)-1;
+	if(fuckynum>=0)
+		goodnum=fuckynum;
+	return goodnum;
+}
 //Draw the board on the screen
 void Board::Render()
 {
+	int goodvalue=fuckthisshit(possibleMoves);
 	//Draw the background
 	this->background->displayAt(0,0);
+
+	//should flicker red when invalid selection occurs
+	if(errorOccurred){
+		this->error->displayAt(0,0);
+		this->errorOccurred=false;
+	}
+	//this draws the selected piece
+	if(possibleMoves!=99){
+		if (possibleMoves<0)
+			this->selected->displayAt(this->slocations[goodvalue].x-4, this->slocations[goodvalue].y-4);
+		if (possibleMoves>=0)
+			this->selected->displayAt(this->locations[goodvalue].x-4, this->locations[goodvalue].y-4);
+	}
+
+	//for starting stacks to determine possible selections
+	if(possibleMoves<0){
+
+			switch (this->GetSizeOfStack(possibleMoves))
+				{
+				case 1:
+					this->possible->displayAt(this->locations[0].x-4,this->locations[0].y-4);
+					this->possible->displayAt(this->locations[3].x-4,this->locations[3].y-4);
+					break;
+				case 2:
+					this->possible->displayAt(this->locations[1].x-4,this->locations[1].y-4);
+					this->possible->displayAt(this->locations[4].x-4,this->locations[4].y-4);
+				    break;
+				case 3:
+					this->possible->displayAt(this->locations[2].x-4,this->locations[2].y-4);
+					this->possible->displayAt(this->locations[5].x-4,this->locations[5].y-4);
+					break;
+				case 4:
+					this->possible->displayAt(this->locations[6].x-4,this->locations[6].y-4);
+					break;
+				}
+	}
+
+	if(possibleMoves!=99 && possibleMoves>=0){
+		
+			switch (possibleMoves)
+				{
+				case 0:
+					if(this->GetSizeOfStack(0)<=2)
+						this->possible->displayAt(this->locations[this->GetSizeOfStack(0)].x-4,this->locations[this->GetSizeOfStack(0)].y-4);
+					else
+						this->possible->displayAt(this->locations[this->GetSizeOfStack(1)+3].x-4,this->locations[this->GetSizeOfStack(1)+3].y-4);
+					break;
+				case 1:
+					if(this->GetSizeOfStack(1)==1)
+						this->possible->displayAt(this->locations[this->GetSizeOfStack(possibleMoves)+possibleMoves].x-4,this->locations[this->GetSizeOfStack(possibleMoves)+possibleMoves].y-4);
+					else
+						this->possible->displayAt(this->locations[this->GetSizeOfStack(1)+4].x-4,this->locations[this->GetSizeOfStack(1)+4].y-4);
+				    break;
+				case 2:
+					this->possible->displayAt(this->locations[this->GetSizeOfStack(2)+5].x-4,this->locations[this->GetSizeOfStack(2)+5].y-4);
+					break;
+				default:
+					this->possible->displayAt(this->locations[this->GetSizeOfStack(possibleMoves)+possibleMoves].x-4,this->locations[this->GetSizeOfStack(possibleMoves)+possibleMoves].y-4);
+					break;
+				}
+	}
+
 
 	//Draw the starting position pieces
 	for (int i = 0; i < this->numstartstacks; i++)
@@ -665,6 +771,13 @@ void Board::Render()
 	}
 }
 
+/*README: IF a piece is selected first, but then an invalid location is selected next,
+such as an place without a board piece location or a location in the starting area it will still make the
+move once once a valid location is selected.
+IF however you select a board space that is invalid (too far ahead or backwards), this will be
+counted as an invalid move and your piece will get unselected
+*/
+
 // Attempt to return a location on the board given a click
 bool Board::GetLocationFromXY(int x, int y, int &result)
 {
@@ -673,17 +786,29 @@ bool Board::GetLocationFromXY(int x, int y, int &result)
 	//I also added a 2px buffer
 	int pieceHeight=32;
 	int	pieceWidth=32;
-
+	
 	// Check starting locations
 	for (int i = 0; i < this->numstartstacks; i++)
 	{
-		
+
+
 		if (x >= this->slocations[i].x-2 && x <= (this->slocations[i].x + pieceWidth + 2) &&
 			y >= this->slocations[i].y-2 && y <= (this->slocations[i].y + pieceHeight + 2))
 		{
 			result = -i - 1; //starting stacks are considered negative with respect to ids...
+
+			if(GetTopPiece(result)!=lastClicked)
+				this->possibleMoves=result;
+			
+
+			//this will prevent the selecting of pieces if they dont belong to player
+			if(this->GetTopPiece(result)!=1+GameData()->currentPlayer || GetSizeOfStack(result)<=0){
+				this->possibleMoves=99;
+			}
+			lastClicked=GetTopPiece(result);
 			return 1;
 		}
+
 	}
 
 	// Check other locations
@@ -695,14 +820,22 @@ bool Board::GetLocationFromXY(int x, int y, int &result)
 		}
 
 		if (x >= this->locations[i].x-2 && x <= (this->locations[i].x + pieceWidth + 2) && 
-			y >= this->locations[i].y-2 && y <= (this->locations[i].y + pieceHeight + 2))
+			y >= this->locations[i].y-2 && y <= (this->locations[i].y + pieceHeight + 2) )
 		{
 			result = i;
+			this->possibleMoves=result;
+
+			//this will prevent the selecting of pieces if they dont belong to player
+			if(this->GetTopPiece(i)!=0 && 1+GameData()->currentPlayer!=this->GetTopPiece(i) || GetSizeOfStack(i)<=0){
+				this->possibleMoves=99;
+			}
+			lastClicked=GetTopPiece(i);
 			return 1;
 		}
 	}
 
 	// Assume failure
+	this->errorOccurred=true;
 	result = 0;
 	return 0;
 }

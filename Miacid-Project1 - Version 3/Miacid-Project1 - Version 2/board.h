@@ -27,11 +27,19 @@ private:
 	bool movingpiece; //if we are in the state of moving a piece (used for rendering)
 	int movingstart; //start here...
 	int movingend; //go to here
+	bool markers[18][3];
+	int possibleMoves;//selected piece, set to 99 as an invalid value
+	bool errorOccurred;
+	int lastClicked;
 
 	Point2f locations[18];
 	Point2f slocations[12];
 
 	PNG * background;
+	PNG * error;//should popup and vanish when user fucks up
+	PNG * unitsMoved[4];//outlines for moved pieces
+	PNG * selected;//outline for selected piece
+	PNG * possible;//outline for possible moves
 	PNG * units[4];
 	PNG * numbers[24];
 
@@ -40,15 +48,18 @@ private:
 public:
 	int numstartstacks;
 
-public:
 	Board();
 
+	int fuckthisshit(int);
 	bool CreateBoard(int players);
 	void CreateLocationsTable();
 	void CreateStartLocationsTable();
 
 	void SetBackground(PNG * bg);
+	void SetError(PNG * error);
+	void SetSelected(PNG * selected, PNG * possible);
 	void SetPieces(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue);
+	void SetPiecesMoved(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue);
 	void SetNumbers(PNG img_num[24]);
 
 	PIECE GetTopPiece(int pos);

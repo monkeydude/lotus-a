@@ -76,10 +76,25 @@ void GD::SetBoardBackground(PNG * bg)
 	this->board.SetBackground(bg);
 }
 
+void GD::SetBoardError(PNG * error)
+{
+	this->board.SetError(error);
+}
+
+void GD::SetSelected(PNG * selected, PNG * possible)
+{
+	this->board.SetSelected(selected,possible);
+}
+
 //Load in the pieces...
 void GD::SetBoardPieces(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue)
 {
 	this->board.SetPieces(unit_white, unit_black, unit_red, unit_blue);
+}
+
+void GD::SetBoardPiecesMoved(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue)
+{
+	this->board.SetPiecesMoved(unit_white, unit_black, unit_red, unit_blue);
 }
 
 //Load array of images to numbers...
