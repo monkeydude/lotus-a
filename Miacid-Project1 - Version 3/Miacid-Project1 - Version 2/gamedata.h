@@ -19,6 +19,7 @@ public:
 	PNG LotusBlackMoved;
 	PNG LotusRedMoved;
 	PNG LotusBlueMoved;
+	PNG LotusMoved[4];
 	PNG LotusWhite;
 	PNG LotusBlack;
 	PNG LotusRed;

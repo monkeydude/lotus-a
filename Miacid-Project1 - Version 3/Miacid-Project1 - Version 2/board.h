@@ -36,7 +36,7 @@ private:
 	int rTotal;
 	int bTotal;
 	int stackHeightCount;
-	bool markers[18][3];
+	int markers[4][2];
 	int possibleMoves;//selected piece, set to 99 as an invalid value
 	bool errorOccurred;
 	int lastClicked;

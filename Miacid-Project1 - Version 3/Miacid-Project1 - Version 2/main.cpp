@@ -109,12 +109,12 @@ static void InitGame()
 	GameData()->LotusPossible.decode("images/possible.png");
 	GameData()->SetSelected(&(GameData()->LotusSelected),&(GameData()->LotusPossible));
 
-	GameData()->LotusWhiteMoved.decode("images/unit_white_move.png");
-	GameData()->LotusBlackMoved.decode("images/unit_black_move.png");
-	GameData()->LotusRedMoved.decode("images/unit_red_move.png");
-	GameData()->LotusBlueMoved.decode("images/unit_blue_move.png");
-	GameData()->SetBoardPiecesMoved(&(GameData()->LotusWhiteMoved), &(GameData()->LotusBlackMoved),
-		&(GameData()->LotusRedMoved), &(GameData()->LotusBlueMoved));
+	GameData()->LotusMoved[0].decode("images/unit_white_move.png");
+	GameData()->LotusMoved[1].decode("images/unit_black_move.png");
+	GameData()->LotusMoved[2].decode("images/unit_red_move.png");
+	GameData()->LotusMoved[3].decode("images/unit_blue_move.png");
+	//GameData()->SetBoardPiecesMoved(&(GameData()->LotusWhiteMoved), &(GameData()->LotusBlackMoved),
+	//	&(GameData()->LotusRedMoved), &(GameData()->LotusBlueMoved));
 
 	GameData()->LotusWhite.decode("images/unit_white.png");
 	GameData()->LotusBlack.decode("images/unit_black.png");

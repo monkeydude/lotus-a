@@ -436,9 +436,13 @@ bool Board::MovePiece(int begin, int end = -1)
 
 			UpdateStateAIs(begin, end);
 
+			
+			//write history of most recent move
+			markers[GameData()->currentPlayer][0]=begin;
+			markers[GameData()->currentPlayer][1]=end;
+			cout<<"I MOVED STUFF 1, for player:"<< GameData()->currentPlayer<<" begin:"<<begin<<" end:"<<end<<endl;
 			// Append last move
 			GameData()->RecordMove(TM_START);
-			
 			return 1;
 		}
 
@@ -513,10 +517,14 @@ bool Board::MovePiece(int begin, int end = -1)
 				this->position[begin].pop();
 
 				UpdateStateAIs(begin, end);
-
+				
+				//record move history so that it can be displayed
+				markers[GameData()->currentPlayer][0]=begin;
+				markers[GameData()->currentPlayer][1]=end;
 				// Assume you did this just to move forward :|
 				GameData()->RecordMove(TM_FORWARD);
-			
+				
+				cout<<"I MOVED STUFF 2, more info above ?"<<endl;
 				return 1;
 			}
 
@@ -527,6 +535,10 @@ bool Board::MovePiece(int begin, int end = -1)
 
 			UpdateStateAIs(begin, end);
 
+			//record move history so that it can be displayed
+			markers[GameData()->currentPlayer][0]=begin;
+			markers[GameData()->currentPlayer][1]=end;
+			cout<<"I MOVED STUFF 3, more info above ?"<<endl;
 			// Check new stack size...
 			if (this->position[end].size() > 2) //significant stack size?
 				GameData()->RecordMove(TM_ATTACK); // assume you attacked
@@ -583,7 +595,11 @@ bool Board::MovePiece(int begin, int end = -1)
 
 				UpdateStateAIs(begin, end);
 
+				//record move history so that it can be displayed
+				markers[GameData()->currentPlayer][0]=begin;
+				markers[GameData()->currentPlayer][1]=end;
 				// You moved forward
+				cout<<"I MOVED STUFF 4, more info above ?"<<endl;
 				GameData()->RecordMove(TM_FORWARD);
 				return 1;
 			}
@@ -639,6 +655,10 @@ bool Board::MovePiece(int begin, int end = -1)
 
 					UpdateStateAIs(begin, end);
 
+					//record move history so that it can be displayed
+					markers[GameData()->currentPlayer][0]=begin;
+					markers[GameData()->currentPlayer][1]=end;
+					cout<<"I MOVED STUFF 5, more info above ?"<<endl;
 					// Assume you did this to move forward
 					GameData()->RecordMove(TM_FORWARD);
 					return 1;
@@ -655,6 +675,10 @@ bool Board::MovePiece(int begin, int end = -1)
 
 					UpdateStateAIs(begin, end);
 
+					//record move history so that it can be displayed
+					markers[GameData()->currentPlayer][0]=begin;
+					markers[GameData()->currentPlayer][1]=end;
+					cout<<"I MOVED STUFF 6, more info above ?"<<endl;
 					// Was this an attack?
 					if (this->position[end].size() > 2) //significant stack size
 						GameData()->RecordMove(TM_ATTACK);
@@ -751,7 +775,7 @@ void Board::Render()
 	int goodvalue=fuckthisshit(possibleMoves);
 	//Draw the background
 	this->background->displayAt(0,0);
-
+	
 	//draw wether eacher player is human, rule, or state AI
 		if(GameData()->players.at(0).isPlaying){
 			if(GameData()->players.at(0).isHuman)
@@ -787,11 +811,13 @@ void Board::Render()
 		}
 	
 
-	//draw current player notifiers
+	//draw player icons
 	this->units[0]->displayAt(15,15);
 	this->units[1]->displayAt(465,15);
 	this->units[2]->displayAt(15,465);
 	this->units[3]->displayAt(465,465);
+
+	//draw higlight of current player icon
 		switch(GameData()->currentPlayer){
 			case 0:
 				GameData()->LotusCurPlayer.displayAt(9,9);break;
@@ -803,7 +829,7 @@ void Board::Render()
 				GameData()->LotusCurPlayer.displayAt(459,459);break;
 		}
 
-//check to see if i need to start adding exxited pieces to player corner
+//check to see if i need to start adding exited pieces to player corner
 	switch(this->GetTopPiece(17)){
 			case 1:
 				whiteExited=true;break;
@@ -820,6 +846,22 @@ void Board::Render()
 		this->error->displayAt(0,0);
 		this->errorOccurred=false;
 	}
+
+	//draw the marker history
+	for(int x=0;x<GameData()->numplayers;x++){
+		//draw it in start zone
+		if(markers[x][0]<0){
+			GameData()->LotusMoved[x].displayAt(slocations[fuckthisshit(markers[x][0])].x-4,slocations[fuckthisshit(markers[x][0])].y-4);
+			GameData()->LotusMoved[x].displayAt(locations[markers[x][1]].x-4,locations[markers[x][1]].y-4);
+		}
+		else{
+			GameData()->LotusMoved[x].displayAt(locations[markers[x][0]].x-4,locations[markers[x][0]].y-4);
+			GameData()->LotusMoved[x].displayAt(locations[markers[x][1]].x-4,locations[markers[x][1]].y-4);
+		}
+
+	}
+
+
 	//this draws the selected piece
 	if(possibleMoves!=99){
 		if (possibleMoves<0)
