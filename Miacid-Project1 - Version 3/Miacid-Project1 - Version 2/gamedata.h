@@ -84,7 +84,6 @@ public:
 	void SetBoardBackground(PNG * bg);
 	void SetBoardError(PNG * error);
 	void SetBoardPieces(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue);
-	void SetBoardPiecesMoved(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue);
 	void SetBoardNumbers(PNG img_num[24]);
 	void SetBoardMessages(PNG img_num[3]);
 	

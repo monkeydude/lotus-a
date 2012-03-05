@@ -46,7 +46,6 @@ private:
 
 	PNG * background;
 	PNG * error;//should popup and vanish when user fucks up
-	PNG * unitsMoved[4];//outlines for moved pieces
 	PNG * selected;//outline for selected piece
 	PNG * possible;//outline for possible moves
 	PNG * units[4];
@@ -78,7 +77,6 @@ public:
 	void SetError(PNG * error);
 	void SetSelected(PNG * selected, PNG * possible);
 	void SetPieces(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue);
-	void SetPiecesMoved(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue);
 	void SetNumbers(PNG img_num[24]);
 	void SetMessages(PNG img_num[3]);
 

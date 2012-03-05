@@ -219,15 +219,6 @@ void Board::SetPieces(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * 
 	this->units[3] = unit_blue;
 }
 
-//Set the Pieces Moved Outlines on the board
-void Board::SetPiecesMoved(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue)
-{
-	this->unitsMoved[0] = unit_white;
-	this->unitsMoved[1] = unit_black;
-	this->unitsMoved[2] = unit_red;
-	this->unitsMoved[3] = unit_blue;
-}
-
 //Set the number on the pieces
 void Board::SetNumbers(PNG img_num[24])
 {

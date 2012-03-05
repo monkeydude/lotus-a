@@ -23,11 +23,6 @@ void Board_SetPieces(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * u
 	GameData()->board.SetPieces(unit_white, unit_black, unit_red, unit_blue);
 }
 
-void Board_SetPiecesMoved(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue)
-{
-	GameData()->board.SetPiecesMoved(unit_white, unit_black, unit_red, unit_blue);
-}
-
 // Load array of images to numbers...
 void Board_SetNumbers(PNG img_num[24])
 {
