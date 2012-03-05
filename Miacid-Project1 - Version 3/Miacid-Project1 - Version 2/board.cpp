@@ -10,6 +10,14 @@ Board::Board()
 	this->errorOccurred = false;
 	this->possibleMoves=99;
 	this->CreateLocationsTable();
+	this->whiteExited=false;
+	this->blackExited=false;
+	this->redExited=false;
+	this->blueExited=false;
+	this->wTotal=0;
+	this->bkTotal=0;
+	this->rTotal=0;
+	this->bTotal=0;
 }
 
 //Attempt to create the board with the specified number of players
@@ -266,6 +274,31 @@ PIECE Board::GetTopPiece(int pos)
 	return this->position[pos].top();
 }
 
+//will not work with starting pieces, can be made to do so easily
+PIECE Board::GetPieceAt(int pos, int piecePos){
+	piecePos++;
+
+	//Valid piece?
+	if (pos < -this->numstartstacks || pos > MAX_GAME_POSITIONS)
+		return PIECE_BAD; //invalid
+
+	//Main board stacks
+    if (this->position[pos].empty())
+		return PIECE_BAD;
+
+	stack<PIECE> tempStack = this->position[pos];
+
+	if(piecePos==tempStack.size())
+		return tempStack.top();
+
+	for(int x=this->GetSizeOfStack(pos);tempStack.size()>piecePos;x--)
+		tempStack.pop();
+
+	return tempStack.top();
+
+}
+
+
 int Board::GetDeepestPiece(PIECE player, int pos)
 {
         int deepest = 0;
@@ -399,6 +432,7 @@ bool Board::MovePiece(int begin, int end = -1)
 
 			// Append last move
 			GameData()->RecordMove(TM_START);
+			
 			return 1;
 		}
 
@@ -450,8 +484,23 @@ bool Board::MovePiece(int begin, int end = -1)
 					
 				
 
-				if (end == MAX_GAME_POSITIONS)
+				if (end == MAX_GAME_POSITIONS){
 					this->finish.push_back(this->position[begin].top());
+					switch(GameData()->currentPlayer){
+						case 0:
+							this->wTotal++;
+							break;
+						case 1:
+							this->bkTotal++;
+							break;
+						case 2:
+							this->rTotal++;
+							break;
+						case 3:
+							this->bTotal++;
+							break;
+					}
+				}
 				else
 					this->position[end].push(this->position[begin].top());
 
@@ -461,6 +510,7 @@ bool Board::MovePiece(int begin, int end = -1)
 
 				// Assume you did this just to move forward :|
 				GameData()->RecordMove(TM_FORWARD);
+			
 				return 1;
 			}
 
@@ -509,6 +559,20 @@ bool Board::MovePiece(int begin, int end = -1)
 				// Moving piece to the finish zone
 				printf("moving piece from %i to %i over distance %i\n", begin, end, distance);
 				this->finish.push_back(this->position[begin].top());
+				switch(GameData()->currentPlayer){
+					case 0:
+						this->wTotal++;
+						break;
+					case 1:
+						this->bkTotal++;
+						break;
+					case 2:
+						this->rTotal++;
+						break;
+					case 3:
+						this->bTotal++;
+						break;
+				}
 				this->position[begin].pop();
 
 				UpdateStateAIs(begin, end);
@@ -545,8 +609,23 @@ bool Board::MovePiece(int begin, int end = -1)
 					
 					
 
-					if (end == MAX_GAME_POSITIONS)
+					if (end == MAX_GAME_POSITIONS){
 						this->finish.push_back(this->position[begin].top());
+						switch(GameData()->currentPlayer){
+						case 0:
+							this->wTotal++;
+							break;
+						case 1:
+							this->bkTotal++;
+							break;
+						case 2:
+							this->rTotal++;
+							break;
+						case 3:
+							this->bTotal++;
+							break;
+						}
+					}
 					else
 						this->position[end].push(this->position[begin].top());
 
@@ -732,16 +811,23 @@ void Board::Render()
 	//Draw the starting position pieces
 	for (int i = 0; i < this->numstartstacks; i++)
 	{
+		//gets top piece of stack at location -1,-2.....-12
+		int drawOffset = 4;
+		
 		PIECE spiece = this->GetTopPiece(-i-1);
 
 		if (spiece != PIECE_BAD)
-		{
-			this->units[spiece-1]->displayAt(this->slocations[i].x, this->slocations[i].y, 1);
+		{	
+			//draws each piece in start loc with an offset depending on stack size
+			for(int stackSizeOffset=0;stackSizeOffset<GetSizeOfStack(-i-1);stackSizeOffset++){
+				this->units[spiece-1]->displayAt(this->slocations[i].x, this->slocations[i].y-stackSizeOffset*5);
+			}
 
 			int amountatpos = (signed int)this->start[i].size();
 
+			//this draws numbers on top of stack
 			if (amountatpos > 1)
-				this->numbers[amountatpos-1]->displayAt(this->slocations[i].x, this->slocations[i].y);
+				this->numbers[amountatpos-1]->displayAt(this->slocations[i].x, this->slocations[i].y-(GetSizeOfStack(-i-1)*5)+1);
 		}
 	}
 
@@ -750,24 +836,59 @@ void Board::Render()
 	{
 		if (this->GetTopPiece(i) != PIECE_BAD)
 		{
-			this->units[this->GetTopPiece(i)-1]->displayAt(this->locations[i].x, this->locations[i].y);
+			//draws each piece in start loc with an offset depending on stack size, correctly draws piece color
+			for(int stackSizeOffset=0;stackSizeOffset<GetSizeOfStack(i);stackSizeOffset++){
+				this->units[this->GetPieceAt(i,stackSizeOffset)-1]->displayAt(this->locations[i].x, this->locations[i].y-stackSizeOffset*5);
+			}
 
 			int amountatpos = (signed int)this->position[i].size();
 
 			if (amountatpos > 1)
-				this->numbers[amountatpos-1]->displayAt(this->locations[i].x, this->locations[i].y);
+				this->numbers[amountatpos-1]->displayAt(this->locations[i].x, this->locations[i].y-(GetSizeOfStack(i)*5)+1);
 		}
 	}
 	
 	// Draw finish zone
 	if (this->GetTopPiece(MAX_GAME_POSITIONS) != PIECE_BAD)
 	{
-		this->units[this->GetTopPiece(MAX_GAME_POSITIONS)-1]->displayAt(this->locations[MAX_GAME_POSITIONS].x, this->locations[MAX_GAME_POSITIONS].y);
 
-		int amountatpos = (signed int)this->finish.size();
+			//Get returns players as 1,2,3,4
+			//if player 1 has a piece that exits draw it in his corner
+		switch(this->GetTopPiece(17)){
+			case 1:
+				whiteExited=true;break;
+			case 2:
+				blackExited=true;break;
+			case 3:
+				redExited=true;break;
+			case 4:
+				blueExited=true;break;
+		}
+			if (whiteExited){
+				this->units[0]->displayAt(15,15);
+				if(wTotal>1)
+					this->numbers[wTotal-1]->displayAt(15,15);
+			}
+			if (blackExited){
+				this->units[1]->displayAt(465,15);
+				if(bkTotal>1)
+					this->numbers[bkTotal-1]->displayAt(465,15);
+			}
+			if (redExited){
+				this->units[2]->displayAt(15,465);
+				if(rTotal>1)
+					this->numbers[rTotal-1]->displayAt(15,456);
+			}
+			if (blueExited){
+				this->units[3]->displayAt(465,465);
+				if(bTotal>1)
+					this->numbers[bTotal-1]->displayAt(465,465);
+			}
+
+			int amountatpos = (signed int)this->finish.size();
 
 		if (amountatpos > 1)
-			this->numbers[amountatpos-1]->displayAt(this->locations[MAX_GAME_POSITIONS].x, this->locations[MAX_GAME_POSITIONS].y);
+			this->numbers[amountatpos-1]->displayAt(this->locations[MAX_GAME_POSITIONS].x+5, this->locations[MAX_GAME_POSITIONS].y+5);
 	}
 }
 

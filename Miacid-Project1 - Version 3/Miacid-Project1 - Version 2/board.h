@@ -27,6 +27,15 @@ private:
 	bool movingpiece; //if we are in the state of moving a piece (used for rendering)
 	int movingstart; //start here...
 	int movingend; //go to here
+	bool whiteExited;
+	bool blackExited;
+	bool redExited;
+	bool blueExited;
+	int wTotal;
+	int bkTotal;
+	int rTotal;
+	int bTotal;
+	int stackHeightCount;
 	bool markers[18][3];
 	int possibleMoves;//selected piece, set to 99 as an invalid value
 	bool errorOccurred;
@@ -63,6 +72,7 @@ public:
 	void SetNumbers(PNG img_num[24]);
 
 	PIECE GetTopPiece(int pos);
+	PIECE GetPieceAt(int pos,int piecePos);
 	int GetDeepestPiece(PIECE player, int pos);
 
 	bool GetLocationFromXY(int x, int y, int &result);
