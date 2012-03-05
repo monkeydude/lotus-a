@@ -103,6 +103,11 @@ void GD::SetBoardNumbers(PNG img_num[24])
 	this->board.SetNumbers(img_num);
 }
 
+void GD::SetBoardMessages(PNG img_num[3])
+{
+	this->board.SetMessages(img_num);
+}
+
 // Record a move
 void GD::RecordMove(TMove move)
 {

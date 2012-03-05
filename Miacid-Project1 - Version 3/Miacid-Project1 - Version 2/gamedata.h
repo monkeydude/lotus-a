@@ -24,6 +24,17 @@ public:
 	PNG LotusRed;
 	PNG LotusBlue;
 	PNG LotusNumbers[24];
+	PNG LotusMessages[3];
+
+	PNG LotusJoinnet;
+	PNG LotusHostnet;
+	PNG LotusConfirm;
+	PNG LotusContinue;
+	PNG LotusRSel;
+	PNG LotusPSel;
+	PNG LotusSkip;
+	PNG LotusCurPlayer;
+
 
 	PNG LotusTurn;
 	PNG LotusWinner;
@@ -74,6 +85,7 @@ public:
 	void SetBoardPieces(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue);
 	void SetBoardPiecesMoved(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue);
 	void SetBoardNumbers(PNG img_num[24]);
+	void SetBoardMessages(PNG img_num[3]);
 	
 	void SetLastClick(int x, int y);
 	Point2i GetLastClick();

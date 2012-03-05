@@ -33,6 +33,10 @@ void Board_SetNumbers(PNG img_num[24])
 {
 	GameData()->board.SetNumbers(img_num);
 }
+void Board_SetMessages(PNG img_num[3])
+{
+	GameData()->board.SetMessages(img_num);
+}
 
 // Check based on click...
 int Board_IsLocGood(int x1, int y1)

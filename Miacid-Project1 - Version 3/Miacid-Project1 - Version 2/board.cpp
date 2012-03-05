@@ -235,6 +235,12 @@ void Board::SetNumbers(PNG img_num[24])
 		this->numbers[i] = &img_num[i];
 }
 
+void Board::SetMessages(PNG img_num[3])
+{
+	for (int i = 0; i < 3; i++)
+		this->messages[i] = &img_num[i];
+}
+
 //NOTE: READ THIS!
 //The range goes from -12 to 17. -12 -> -1 are starting stacks. 0 -> 16 are regular. 17 is the end zone.
 
@@ -746,6 +752,69 @@ void Board::Render()
 	//Draw the background
 	this->background->displayAt(0,0);
 
+	//draw wether eacher player is human, rule, or state AI
+		if(GameData()->players.at(0).isPlaying){
+			if(GameData()->players.at(0).isHuman)
+				GameData()->LotusHuman.displayAt(30,10);
+			else if(GameData()->players.at(0).isRule)
+				GameData()->LotusAIRule.displayAt(30,10);
+			else
+				GameData()->LotusAIState.displayAt(30,10);
+		}
+		if(GameData()->players.at(1).isPlaying){
+			if(GameData()->players.at(1).isHuman)
+				GameData()->LotusHuman.displayAt(354,10);
+			else if(GameData()->players.at(1).isRule)
+				GameData()->LotusAIRule.displayAt(354,10);
+			else
+				GameData()->LotusAIState.displayAt(354,10);
+		}
+		if(GameData()->players.at(2).isPlaying){
+			if(GameData()->players.at(2).isHuman)
+				GameData()->LotusHuman.displayAt(30,470);
+			else if(GameData()->players.at(2).isRule)
+				GameData()->LotusAIRule.displayAt(30,470);
+			else
+				GameData()->LotusAIState.displayAt(30,470);
+		}
+		if(GameData()->players.at(3).isPlaying){
+			if(GameData()->players.at(3).isHuman)
+				GameData()->LotusHuman.displayAt(354,470);
+			else if(GameData()->players.at(3).isRule)
+				GameData()->LotusAIRule.displayAt(354,470);
+			else
+				GameData()->LotusAIState.displayAt(354,470);
+		}
+	
+
+	//draw current player notifiers
+	this->units[0]->displayAt(15,15);
+	this->units[1]->displayAt(465,15);
+	this->units[2]->displayAt(15,465);
+	this->units[3]->displayAt(465,465);
+		switch(GameData()->currentPlayer){
+			case 0:
+				GameData()->LotusCurPlayer.displayAt(9,9);break;
+			case 1:
+				GameData()->LotusCurPlayer.displayAt(459,9);break;
+			case 2:
+				GameData()->LotusCurPlayer.displayAt(9,459);break;
+			case 3:
+				GameData()->LotusCurPlayer.displayAt(459,459);break;
+		}
+
+//check to see if i need to start adding exxited pieces to player corner
+	switch(this->GetTopPiece(17)){
+			case 1:
+				whiteExited=true;break;
+			case 2:
+				blackExited=true;break;
+			case 3:
+				redExited=true;break;
+			case 4:
+				blueExited=true;break;
+	}
+
 	//should flicker red when invalid selection occurs
 	if(errorOccurred){
 		this->error->displayAt(0,0);
@@ -782,6 +851,7 @@ void Board::Render()
 				}
 	}
 
+	//for regular stacks
 	if(possibleMoves!=99 && possibleMoves>=0){
 		
 			switch (possibleMoves)
@@ -790,7 +860,7 @@ void Board::Render()
 					if(this->GetSizeOfStack(0)<=2)
 						this->possible->displayAt(this->locations[this->GetSizeOfStack(0)].x-4,this->locations[this->GetSizeOfStack(0)].y-4);
 					else
-						this->possible->displayAt(this->locations[this->GetSizeOfStack(1)+3].x-4,this->locations[this->GetSizeOfStack(1)+3].y-4);
+						this->possible->displayAt(this->locations[this->GetSizeOfStack(0)+3].x-4,this->locations[this->GetSizeOfStack(0)+3].y-4);
 					break;
 				case 1:
 					if(this->GetSizeOfStack(1)==1)
@@ -854,41 +924,24 @@ void Board::Render()
 
 			//Get returns players as 1,2,3,4
 			//if player 1 has a piece that exits draw it in his corner
-		switch(this->GetTopPiece(17)){
-			case 1:
-				whiteExited=true;break;
-			case 2:
-				blackExited=true;break;
-			case 3:
-				redExited=true;break;
-			case 4:
-				blueExited=true;break;
-		}
-			if (whiteExited){
-				this->units[0]->displayAt(15,15);
-				if(wTotal>1)
+
+			if (wTotal>1){
 					this->numbers[wTotal-1]->displayAt(15,15);
 			}
-			if (blackExited){
-				this->units[1]->displayAt(465,15);
-				if(bkTotal>1)
+			if (bkTotal>1){
 					this->numbers[bkTotal-1]->displayAt(465,15);
 			}
-			if (redExited){
-				this->units[2]->displayAt(15,465);
-				if(rTotal>1)
+			if (rTotal>1){
 					this->numbers[rTotal-1]->displayAt(15,456);
 			}
-			if (blueExited){
-				this->units[3]->displayAt(465,465);
-				if(bTotal>1)
+			if (bTotal>1){
 					this->numbers[bTotal-1]->displayAt(465,465);
 			}
 
 			int amountatpos = (signed int)this->finish.size();
 
 		if (amountatpos > 1)
-			this->numbers[amountatpos-1]->displayAt(this->locations[MAX_GAME_POSITIONS].x+5, this->locations[MAX_GAME_POSITIONS].y+5);
+			this->numbers[amountatpos-1]->displayAt(328,458);
 	}
 }
 

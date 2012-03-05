@@ -51,6 +51,16 @@ private:
 	PNG * possible;//outline for possible moves
 	PNG * units[4];
 	PNG * numbers[24];
+	PNG * messages[3];
+
+	PNG * LotusJoinnet;
+	PNG * LotusHostnet;
+	PNG * LotusConfirm;
+	PNG * LotusContinue;
+	PNG * LotusRSel;
+	PNG * LotusPSel;
+	PNG * LotusSkip;
+	PNG * LotusCurPlayer;
 
 	void UpdateStateAIs(int, int);
 
@@ -70,6 +80,7 @@ public:
 	void SetPieces(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue);
 	void SetPiecesMoved(PNG * unit_white, PNG * unit_black, PNG * unit_red, PNG * unit_blue);
 	void SetNumbers(PNG img_num[24]);
+	void SetMessages(PNG img_num[3]);
 
 	PIECE GetTopPiece(int pos);
 	PIECE GetPieceAt(int pos,int piecePos);

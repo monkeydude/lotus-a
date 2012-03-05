@@ -136,6 +136,7 @@ void GameResults()
 {
 	system("cls");
 	printf("Congratulations! The game has been won!");
+	getchar();
 
 	// Press a key to end the game?
 }

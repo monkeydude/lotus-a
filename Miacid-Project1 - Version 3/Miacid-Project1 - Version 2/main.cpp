@@ -123,6 +123,23 @@ static void InitGame()
 	GameData()->SetBoardPieces(&(GameData()->LotusWhite), &(GameData()->LotusBlack),
 		&(GameData()->LotusRed), &(GameData()->LotusBlue));
 
+	//these are the messages and their location in array
+	//GameData()->LotusMessages[0].decode("images/win1.png");
+	//GameData()->LotusMessages[1].decode("images/win2.png");
+	//GameData()->LotusMessages[2].decode("images/win3.png");
+	
+	GameData()->LotusJoinnet.decode("images/joinnet.png");//join network game
+	GameData()->LotusHostnet.decode("images/hostnet.png");//host network game
+	GameData()->LotusConfirm.decode("images/confirm.png");//confirm, has yes and no
+	GameData()->LotusContinue.decode("images/continue.png");//continue, has yes and no
+	GameData()->LotusRSel.decode("images/prorule.png");//prorules, has yes and no
+	GameData()->LotusPSel.decode("images/pselect.png");//select starting player, needs other gfx implemented
+	GameData()->LotusSkip.decode("images/skipturn.png");//skip turn, no options
+	GameData()->LotusCurPlayer.decode("images/currentplayer.png");//current player outline
+	
+	//GameData()->SetBoardMessages(GameData()->LotusMessages);
+
+
 	GameData()->LotusNumbers[0].decode("images/numpcs_1.png");
 	GameData()->LotusNumbers[1].decode("images/numpcs_2.png");
 	GameData()->LotusNumbers[2].decode("images/numpcs_3.png");
