@@ -236,12 +236,20 @@ void GameMainBoard()
 			//Req105.3 on first turn in a 2 player game, go twice with pro rules
 			if ((GameData()->firstturn==0) && (GameData()->pro) && (GameData()->numplayers==2)){ 
 				GameData()->firstturn=1;
-				if (GameData()->players.at(GameData()->currentPlayer).isHuman)
+				if (GameData()->players.at(GameData()->currentPlayer).isHuman && !GameData()->players.at(GameData()->currentPlayer).isNetwork)
 					PerformHumanTurn(GameData()->players.at(GameData()->currentPlayer));
-				else if (!GameData()->players.at(GameData()->currentPlayer).isRule)
+				//send a move to a network player
+				else if (GameData()->players.at(GameData()->currentPlayer).isHuman && GameData()->players.at(GameData()->currentPlayer).isNetwork){
+					netret = GameData()->net.sendMove((char*)PerformHumanTurn(GameData()->players.at(GameData()->currentPlayer)).c_str());
+				}
+				else if (GameData()->players.at(GameData()->currentPlayer).isState)
 					PerformAIStateTurn(GameData()->players.at(GameData()->currentPlayer), GameData()->states.at(GameData()->currentPlayer));
-				else // if (!GameData()->players.at(GameData()->currentPlayer).isRule)
-					PerformAIRuleTurn(GameData()->players.at(GameData()->currentPlayer)); // default to the rule AI
+				else if (GameData()->players.at(GameData()->currentPlayer).isRule)
+					PerformAIStateTurn(GameData()->players.at(GameData()->currentPlayer), GameData()->states.at(GameData()->currentPlayer));
+				//get a network player's move
+				else{
+					netret = GameData()->net.receiveMove();
+				}
 				GameData()->firstturn=2;
 			}
 
