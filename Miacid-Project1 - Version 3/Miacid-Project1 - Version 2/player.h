@@ -18,13 +18,9 @@ public:
 	PIECE piece;
 	bool isPlaying;
 	bool isHuman;
-	bool isRule; //if not, it is state or human
-
-	// Rules
-	// nothing here
-
-	// States
-	// to do...
+	bool isRule;
+	bool isState;
+	bool isNetwork;
 
 	Player()
 	{
@@ -32,8 +28,8 @@ public:
 		this->isPlaying = 0;
 		this->isHuman = 1;
 		this->isRule = 0;
-
-		// some state code may go here..
+		this->isState = 0;
+		this->isNetwork = 0;
 	}
 };
 
@@ -44,12 +40,16 @@ public:
 	bool isPlaying;
 	bool isHuman;
 	bool isRule;
+	bool isState;
+	bool isNetwork;
 	
 	PlayerType()
 	{
 		isPlaying=true;
 		isHuman=true;
 		isRule=false;
+		isState = false;
+		isNetwork = false;
 	}
 };
 

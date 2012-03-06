@@ -2,6 +2,7 @@
 #define GAMEDATA_H
 
 #include "StateAI.h"
+#include "NetworkFacade.h"
 
 enum Scene {SCENE_DEFAULT, SCENE_SELECT_PLAYERS, SCENE_MAINBOARD, SCENE_RESULTS};
 
@@ -66,6 +67,9 @@ public:
 	vector<Player> players;
 	//vector of states where each position refers to the state of that player (some positions will never be used if that player is not a state AI)
 	vector<BaseState*> states;
+
+	//Req103
+	NetworkFacade net;
 
 	bool pro; //Req105.3
 	int firstturn; //Req105.3

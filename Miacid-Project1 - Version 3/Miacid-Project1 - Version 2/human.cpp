@@ -1,6 +1,6 @@
 #include "foundation.h"
 
-void PerformHumanTurn(Player &player)
+string PerformHumanTurn(Player &player)
 {
 	// Variables
 	Point2i click = Point2i(-1, -1); //invalid click
@@ -97,8 +97,11 @@ void PerformHumanTurn(Player &player)
 
 
 			// Attempt to move piece
-			if (GameData()->board.MovePiece(position1, position2))
-				break;
+			if (GameData()->board.MovePiece(position1, position2)){
+				stringstream posholder;
+				posholder<<position1<<"|"<<position2<<"#";
+				return posholder.str();
+			}
 		}
 	}
 }

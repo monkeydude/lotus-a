@@ -12,8 +12,11 @@ void RenderLoading()
 void RenderSelectPlayers()
 {
 	GameData()->LotusFrontBoard.displayAt(0, 0);
-	if (!GameData()->selectPlayerType)
+	if (!GameData()->selectPlayerType){
 		GameData()->LotusPlayers.displayAt(0, 300);
+		GameData()->LotusHostnet.displayAt(45, 100);
+		GameData()->LotusJoinnet.displayAt(270, 100);
+	}
 	else
 	{
 		GameData()->LotusPlayer1.displayAt(100, 300);

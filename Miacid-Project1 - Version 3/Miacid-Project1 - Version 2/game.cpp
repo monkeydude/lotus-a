@@ -3,21 +3,27 @@
 #include <cstring>
 
 // Define who is playing the game
-void ChangeAI (bool &isHuman, bool &isRule)
+void ChangeAI (bool &isHuman, bool &isRule, bool &isState)
 {
-	if (isHuman)
-	{
-		isHuman=false;
-		isRule=true;
+	if (isHuman){
+		isHuman = false;
+		isRule = true;
 	}
-	else if (isRule)
-		isRule=false;
-	else if (!isRule && !isHuman)
-		isHuman=true;
+	else if (isRule){
+		isRule = false;
+		isState = true;
+	}
+	else{
+		isState = false;
+		isHuman = true;
+	}
 }
 
 void GameSelectPlayers()
 {
+	//used to avoid asking for player types if a network game is made
+	bool isNet = false;
+
 	// Create four players in memory, even though they may not be used
 	for (int i = 0; i < 4; i++)
 		GameData()->CreatePlayer();
@@ -55,6 +61,24 @@ void GameSelectPlayers()
 				GameData()->numplayers = 3;
 			else if (mousepos.x >= 323 && mousepos.x <= 341 && mousepos.y >= 376 && mousepos.y <= 400)
 				GameData()->numplayers = 4;
+			//if a network game is hosted
+			else if (mousepos.x >= 45 && mousepos.x <= 241 && mousepos.y >= 100 && mousepos.y <= 194){
+				isNet = true;
+				GameData()->numplayers = 2;
+				GameData()->players.at(1).isHuman = false;
+				GameData()->players.at(1).isNetwork = true;
+				GameData()->players.at(0).isNetwork = true;
+				GameData()->net.awaitConnection();
+			}
+			//if a network game is joined
+			else if (mousepos.x >= 270 && mousepos.x <= 466 && mousepos.y >= 100 && mousepos.y <= 194){
+				isNet = true;
+				GameData()->numplayers = 2;
+				GameData()->players.at(0).isHuman = false;
+				GameData()->players.at(0).isNetwork = true;
+				GameData()->players.at(1).isNetwork = true;
+				GameData()->net.connectTo();
+			}
 
 			// Acceptable value?
 			if (GameData()->numplayers >= 2 && GameData()->numplayers <= 4)
@@ -73,7 +97,7 @@ void GameSelectPlayers()
 		GameData()->pro=1;
 
 
-		while (true)
+		while (!isNet)
 		{
 			// Reset click
 			GameData()->ResetLastClick();
@@ -86,13 +110,13 @@ void GameSelectPlayers()
 
 			// Adjust player types...
 			if (mousepos.x >= 100 && mousepos.x <= 228 && mousepos.y >= 300 && mousepos.y <= 364)
-				ChangeAI(GameData()->players.at(0).isHuman, GameData()->players.at(0).isRule);
+				ChangeAI(GameData()->players.at(0).isHuman, GameData()->players.at(0).isRule, GameData()->players.at(0).isState);
 			else if (mousepos.x >= 300 && mousepos.x <= 428 && mousepos.y >= 300 && mousepos.y <= 364)
-				ChangeAI(GameData()->players.at(1).isHuman, GameData()->players.at(1).isRule);
+				ChangeAI(GameData()->players.at(1).isHuman, GameData()->players.at(1).isRule, GameData()->players.at(1).isState);
 			else if (mousepos.x >= 100 && mousepos.x <= 228 && mousepos.y >= 400 && mousepos.y <= 464 && GameData()->players.at(2).isPlaying)
-				ChangeAI(GameData()->players.at(2).isHuman, GameData()->players.at(2).isRule);
+				ChangeAI(GameData()->players.at(2).isHuman, GameData()->players.at(2).isRule, GameData()->players.at(2).isState);
 			else if (mousepos.x >= 300 && mousepos.x <= 428 && mousepos.y >= 400 && mousepos.y <= 464 && GameData()->players.at(3).isPlaying)
-				ChangeAI(GameData()->players.at(3).isHuman, GameData()->players.at(3).isRule);
+				ChangeAI(GameData()->players.at(3).isHuman, GameData()->players.at(3).isRule, GameData()->players.at(3).isState);
 
 
 			//Req105.3 NEED A BUTTON THAT CHANGES FROM YES/NO TO PROFESSIONAL RULES AND PROPER COORDINATES
@@ -147,6 +171,7 @@ void GameMainBoard()
 
 	// The number of wins must be equal to the number of plays minus one to end
 	static int numwins = 0;
+	int netret = 0;
 
 	// Go through every player's turn until the game ends
 	for (GameData()->currentPlayer = 0; GameData()->currentPlayer < GameData()->GetNumPlayers(); GameData()->currentPlayer++)
@@ -192,12 +217,20 @@ void GameMainBoard()
 				continue; //exit their turn
 
 			// AI or Human?
-			if (GameData()->players.at(GameData()->currentPlayer).isHuman)
+			if (GameData()->players.at(GameData()->currentPlayer).isHuman && !GameData()->players.at(GameData()->currentPlayer).isNetwork)
 				PerformHumanTurn(GameData()->players.at(GameData()->currentPlayer));
-			else if (!GameData()->players.at(GameData()->currentPlayer).isRule)
+			//send a move to a network player
+			else if (GameData()->players.at(GameData()->currentPlayer).isHuman && GameData()->players.at(GameData()->currentPlayer).isNetwork){
+				netret = GameData()->net.sendMove((char*)PerformHumanTurn(GameData()->players.at(GameData()->currentPlayer)).c_str());
+			}
+			else if (GameData()->players.at(GameData()->currentPlayer).isState)
 				PerformAIStateTurn(GameData()->players.at(GameData()->currentPlayer), GameData()->states.at(GameData()->currentPlayer));
-			else // if (!GameData()->players.at(GameData()->currentPlayer).isRule)
-				PerformAIRuleTurn(GameData()->players.at(GameData()->currentPlayer)); // default to the rule AI
+			else if (GameData()->players.at(GameData()->currentPlayer).isRule)
+				PerformAIStateTurn(GameData()->players.at(GameData()->currentPlayer), GameData()->states.at(GameData()->currentPlayer));
+			//get a network player's move
+			else{
+				netret = GameData()->net.receiveMove();
+			}
 
 
 			//Req105.3 on first turn in a 2 player game, go twice with pro rules
@@ -219,10 +252,11 @@ void GameMainBoard()
 
 
 			// If the player just won the game, then let's exit...
-			if (GameData()->board.PlayerHasWon(GameData()->players.at(GameData()->currentPlayer).piece))
+			if (GameData()->board.PlayerHasWon(GameData()->players.at(GameData()->currentPlayer).piece) || netret != 0)
 
 
 				//Req104.8 gives player option to continue playing if one player has exited
+				// If the player just won the game or if a network connection has been dropped, then exit
 				if (GameData()->numplayers>2){
 					if (!((GameData()->numplayers==3)&&(GameData()->exitedplayer1!=NULL))){ //if the 2nd person just exited a 3 player game
 						if (!((GameData()->numplayers==4)&&(GameData()->exitedplayer2!=NULL))){ //if the 3rd person just exited a 4 player game
@@ -260,6 +294,9 @@ void GameMainBoard()
 				}
 				else{
 					GameData()->SceneState = SCENE_RESULTS;
+					if (netret == 0 && (GameData()->players.at(0).isNetwork || GameData()->players.at(1).isNetwork))
+						GameData()->net.endConnection();
+					break;
 					//DISPLAY WHO WON 1ST PLACE
 				}
 

@@ -4,6 +4,7 @@
 // This file is created so that .cpp files should only need to include this one header
 
 // Common C++ and Windows
+#include <ws2tcpip.h>
 #include <windows.h>
 #include <stdlib.h>
 #include <ctime>
@@ -12,6 +13,10 @@
 #include <iostream>
 #include <algorithm>
 #include <functional>
+#include <string>
+#include <sstream>
+
+#pragma comment (lib, "Ws2_32.lib")
 
 // OpenGL
 #pragma comment(lib, "glaux.lib")
@@ -29,6 +34,7 @@
 #include "boardfunc.h"
 #include "gamedata.h"
 #include "StateAI.h"
+#include "NetworkFacade.h"
 
 // Common Function Prototypes (to avoid plentiful .h files)
 void GameSelectPlayers();
@@ -40,7 +46,7 @@ void RenderSelectPlayers();
 void RenderMainBoard();
 void RenderResults();
 
-void PerformHumanTurn(Player &player);
+string PerformHumanTurn(Player &player);
 void PerformAIStateTurn(Player &player, BaseState* &state);
 void PerformAIRuleTurn(Player &player);
 

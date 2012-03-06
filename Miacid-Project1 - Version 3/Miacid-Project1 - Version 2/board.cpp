@@ -774,7 +774,7 @@ void Board::Render()
 	
 	//draw wether eacher player is human, rule, or state AI
 		if(GameData()->players.at(0).isPlaying){
-			if(GameData()->players.at(0).isHuman)
+			if(GameData()->players.at(0).isHuman || GameData()->players.at(0).isNetwork)
 				GameData()->LotusHuman.displayAt(30,10);
 			else if(GameData()->players.at(0).isRule)
 				GameData()->LotusAIRule.displayAt(30,10);
@@ -782,7 +782,7 @@ void Board::Render()
 				GameData()->LotusAIState.displayAt(30,10);
 		}
 		if(GameData()->players.at(1).isPlaying){
-			if(GameData()->players.at(1).isHuman)
+			if(GameData()->players.at(1).isHuman || GameData()->players.at(1).isNetwork)
 				GameData()->LotusHuman.displayAt(354,10);
 			else if(GameData()->players.at(1).isRule)
 				GameData()->LotusAIRule.displayAt(354,10);

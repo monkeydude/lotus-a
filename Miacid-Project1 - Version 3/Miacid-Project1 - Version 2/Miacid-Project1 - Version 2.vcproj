@@ -186,6 +186,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\NetworkFacade.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\NetworkFacade.h"
+				>
+			</File>
+			<File
 				RelativePath=".\rendering.cpp"
 				>
 			</File>
