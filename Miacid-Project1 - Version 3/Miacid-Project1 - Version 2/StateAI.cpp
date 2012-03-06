@@ -708,12 +708,14 @@ void cantMoveState::movePiece(){
 	deepest = 0;
 	int pos;
 
-	//find the stack in which your piece is deepest
-	for (int a=0; a<17; a++){
-		if (GameData()->board.GetDeepestPiece(playernum, a) > deepest){
-			pos = GameData()->board.GetDeepestPiece(playernum, a);
+	if (GameData()->pro){ //Req105.3
+		//find the stack in which your piece is deepest
+		for (int a=0; a<17; a++){
+			if (GameData()->board.GetDeepestPiece(playernum, a) > deepest){
+				pos = GameData()->board.GetDeepestPiece(playernum, a);
+			}
 		}
-	}
+	
 
 	validMoves_.clear();
 	validMoves_.push_back(pos);
@@ -734,6 +736,8 @@ void cantMoveState::movePiece(){
 	cout << "After moving piece: ";
 	printValidMoves();
 	cout<<endl;
+
+	}
 
 }
 

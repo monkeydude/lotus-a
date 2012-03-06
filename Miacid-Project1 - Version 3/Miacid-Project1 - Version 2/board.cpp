@@ -368,6 +368,11 @@ int Board::GetSizeOfStack(int pos)
 // Move a piece...
 bool Board::MovePiece(int begin, int end = -1)
 {
+	if ((GameData()->firstturn==0) && (GameData()->pro) && (GameData()->numplayers==2))
+		GameData()->firstturnpos=end;
+	if ((GameData()->firstturn==1) && (GameData()->pro) && (GameData()->numplayers==2) && (GameData()->firstturnpos==begin))
+		return 0;
+
 	// Are the start and end points valid?
 	if (begin < -this->numstartstacks || begin > MAX_GAME_POSITIONS || (end <= begin && end != -1))
 	{

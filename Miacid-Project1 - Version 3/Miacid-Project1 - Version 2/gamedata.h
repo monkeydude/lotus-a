@@ -67,6 +67,12 @@ public:
 	//vector of states where each position refers to the state of that player (some positions will never be used if that player is not a state AI)
 	vector<BaseState*> states;
 
+	bool pro; //Req105.3
+	int firstturn; //Req105.3
+	int firstturnpos; //Req105.3
+	int adjustplayer; //Req104.11 
+	int exitedplayer1;
+	int exitedplayer2;
 
 	Scene SceneState;
 
